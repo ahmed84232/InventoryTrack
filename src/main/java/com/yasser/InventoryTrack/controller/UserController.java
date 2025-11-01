@@ -1,15 +1,12 @@
 package com.yasser.InventoryTrack.controller;
 
-import com.yasser.InventoryTrack.dao.UserDAO;
 import com.yasser.InventoryTrack.dto.UserDTO;
-import com.yasser.InventoryTrack.entity.User;
 import com.yasser.InventoryTrack.service.ServiceRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.imageio.spi.ServiceRegistry;
 import java.util.List;
 
 
@@ -26,7 +23,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler
     public UserDTO getUser(@PathVariable int id) throws ResponseStatusException {
         return serviceRepository.getUserById(id);
     }
