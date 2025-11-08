@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductsService {
@@ -57,6 +58,10 @@ public class ProductsService {
 
     }
 
+    public List<ProductDto> getProductsByName(String name) {
+        return productDAO.findByNameContaining(name).stream().map(this::productToProductDto).collect(Collectors.toList());
+    }
+
     // PRODUCTS METHODS
     public ProductDto addProduct(ProductDto productDTO) {
 
@@ -89,6 +94,17 @@ public class ProductsService {
 
         productDAO.delete(product);
 
+    }
+
+    private ProductDto productToProductDto(Product product) {
+        ProductDto productDto = new ProductDto();
+        productDto.setId(product.getId());
+        productDto.setDescription(product.getDescription());
+        productDto.setName(product.getName());
+        productDto.setPrice(product.getPrice());
+        productDto.setQuantity(product.getStockQuantity());
+
+        return productDto;
     }
 
 }

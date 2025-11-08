@@ -1,6 +1,7 @@
 package com.yasser.InventoryTrack.controller;
 
 import com.yasser.InventoryTrack.dto.ProductDto;
+import com.yasser.InventoryTrack.enums.UserRole;
 import com.yasser.InventoryTrack.service.ProductsService;
 import com.yasser.InventoryTrack.util.SecurityContext;
 import jakarta.validation.Valid;
@@ -27,15 +28,19 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductDto getProduct(@PathVariable int id) throws ResponseStatusException {
+    public ProductDto getProductById(@PathVariable int id) throws ResponseStatusException {
         return productsService.getProductById(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductDto> getAllProduct() {
+    public List<ProductDto> getAllProduct(@RequestParam(required = false) String query) {
 
-        return productsService.getProducts();
+        if (query != null && !query.isEmpty()) {
+            return productsService.getProductsByName(query);
+        } else {
+            return productsService.getProducts();
+        }
     }
 
     @PostMapping
@@ -47,7 +52,8 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable int id) throws ResponseStatusException{
         List<String> roles = this.securityContext.getRoles();
-        if (roles.contains("owner")) {
+
+        if (roles.contains(UserRole.OWNER.getValue())) {
             productsService.deleteProduct(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
