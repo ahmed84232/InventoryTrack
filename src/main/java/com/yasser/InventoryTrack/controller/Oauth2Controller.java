@@ -16,6 +16,12 @@ import java.util.HashMap;
 @RequestMapping("/api/auth")
 public class Oauth2Controller {
 
+    @GetMapping("/redirect")
+    public ResponseEntity<String> redirectToOauth2(@RequestParam("code") String code, @RequestParam("state") String state) {
+        System.out.println(code);
+        return ResponseEntity.ok(code);
+    }
+
     @PostMapping("/token")
     public ResponseEntity<String> getToken(@RequestBody String body) throws JsonProcessingException {
 

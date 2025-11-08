@@ -9,25 +9,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "product_order")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
-
+public class ProductOrder {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id")
+    private String userId;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems = new ArrayList<OrderItem>();
+    @Column(name = "user_name")
+    private String userName;
 
+    @Column(name = "total_price")
     private Double totalPrice;
+
+    @OneToMany(mappedBy = "productOrder", cascade = CascadeType.ALL)
+    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
+
 
 }

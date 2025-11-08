@@ -51,6 +51,9 @@ public class RequestResponseLoggingFilter implements Filter {
             ObjectMapper mapper = new ObjectMapper();
             HashMap<?, ?> payloadHashmap = mapper.readValue(decodedPayload, HashMap.class);
 
+            this.securityContext.setUserId((String) payloadHashmap.get("sub"));
+            this.securityContext.setUserName((String) payloadHashmap.get("name"));
+
             if (payloadHashmap.containsKey("resource_access")) {
 
                 HashMap<?, ?> resourceAccess = (HashMap<?, ?>) payloadHashmap.get("resource_access");
@@ -69,7 +72,7 @@ public class RequestResponseLoggingFilter implements Filter {
 
         filterChain.doFilter(servletRequest, servletResponse);
 
-        log(requestWrapper, responseWrapper);
+//        log(requestWrapper, responseWrapper);
 
 //        responseWrapper.copyBodyToResponse();
     }

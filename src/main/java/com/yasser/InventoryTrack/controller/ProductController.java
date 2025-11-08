@@ -1,7 +1,7 @@
 package com.yasser.InventoryTrack.controller;
 
-import com.yasser.InventoryTrack.dto.ProductsDTO;
-import com.yasser.InventoryTrack.service.ServiceRepository;
+import com.yasser.InventoryTrack.dto.ProductDto;
+import com.yasser.InventoryTrack.service.ProductsService;
 import com.yasser.InventoryTrack.util.SecurityContext;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -15,40 +15,40 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ServiceRepository serviceRepository;
+    private final ProductsService productsService;
     private final SecurityContext securityContext;
 
-    public ProductController(ServiceRepository serviceRepository, SecurityContext securityContext) {
+    public ProductController(ProductsService productsService, SecurityContext securityContext) {
 
-        this.serviceRepository = serviceRepository;
+        this.productsService = productsService;
         this.securityContext = securityContext;
     }
 
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductsDTO getProduct(@PathVariable int id) throws ResponseStatusException {
-        return serviceRepository.getProductById(id);
+    public ProductDto getProduct(@PathVariable int id) throws ResponseStatusException {
+        return productsService.getProductById(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductsDTO> getAllProduct() {
+    public List<ProductDto> getAllProduct() {
 
-        return serviceRepository.getProducts();
+        return productsService.getProducts();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductsDTO addProduct(@RequestBody @Valid ProductsDTO product) {
-        return serviceRepository.addProduct(product);
+    public ProductDto addProduct(@RequestBody @Valid ProductDto product) {
+        return productsService.addProduct(product);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable int id) throws ResponseStatusException{
         List<String> roles = this.securityContext.getRoles();
         if (roles.contains("owner")) {
-            serviceRepository.deleteProduct(id);
+            productsService.deleteProduct(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 

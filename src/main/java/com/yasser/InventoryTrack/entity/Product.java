@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
 
     @Id
@@ -30,13 +30,12 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-
     @Column(name = "price")
     @NotNull(message = "Price is required")
     private double price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<ProductOrderItem> productOrderItems = new ArrayList<>();
 
     @Column(name = "stock_quantity")
     @Min(value = 0, message = "if you are going to add product you should at least have one of it.")

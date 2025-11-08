@@ -1,6 +1,16 @@
 package com.yasser.InventoryTrack.enums;
 
-public enum UserRole {
+import lombok.Getter;
 
-    ADMIN, USER
+@Getter
+public enum UserRole {
+    OWNER("owner"),
+    DATA_ENTRY("dataEntry"),
+    CASHIER("cashier");
+
+    public final String value;
+
+    UserRole(String value) {
+        this.value = value;
+    }
 }

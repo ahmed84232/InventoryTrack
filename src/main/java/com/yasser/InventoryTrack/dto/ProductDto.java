@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProductsDTO {
+public class ProductDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer id;
