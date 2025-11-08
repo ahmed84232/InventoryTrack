@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ProductDao extends JpaRepository<Product, Integer> {
-    List<Product> findByNameContaining(String fragment);
+    List<Product> findByNameIgnoreCaseContaining(String fragment);
 }

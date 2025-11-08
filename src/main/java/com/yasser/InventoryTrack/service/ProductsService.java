@@ -59,7 +59,7 @@ public class ProductsService {
     }
 
     public List<ProductDto> getProductsByName(String name) {
-        return productDAO.findByNameContaining(name).stream().map(this::productToProductDto).collect(Collectors.toList());
+        return productDAO.findByNameIgnoreCaseContaining(name).stream().map(this::productToProductDto).collect(Collectors.toList());
     }
 
     // PRODUCTS METHODS

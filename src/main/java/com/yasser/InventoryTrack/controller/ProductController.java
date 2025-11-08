@@ -37,7 +37,7 @@ public class ProductController {
     public List<ProductDto> getAllProduct(@RequestParam(required = false) String query) {
 
         if (query != null && !query.isEmpty()) {
-            return productsService.getProductsByName(query);
+            return productsService.getProductsByName(query.toLowerCase());
         } else {
             return productsService.getProducts();
         }
