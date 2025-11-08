@@ -54,18 +54,19 @@ public class RequestResponseLoggingFilter implements Filter {
             this.securityContext.setUserId((String) payloadHashmap.get("sub"));
             this.securityContext.setUserName((String) payloadHashmap.get("name"));
 
+            ArrayList<String> roles = new ArrayList<>();
             if (payloadHashmap.containsKey("resource_access")) {
 
                 HashMap<?, ?> resourceAccess = (HashMap<?, ?>) payloadHashmap.get("resource_access");
                 if (resourceAccess.containsKey("InventoryManagment")) {
                     HashMap<?, ?> inventoryManagment = (HashMap<?, ?>) resourceAccess.get("InventoryManagment");
 
-                    ArrayList<String> roles = (ArrayList<String>) inventoryManagment.get("roles");
-                    this.securityContext.setRoles(roles);
+                    roles.addAll((ArrayList<String>) inventoryManagment.get("roles"));
 
-                    System.out.println(roles);
                 }
             }
+
+            this.securityContext.setRoles(roles);
 
             System.out.println(decodedPayload);
         }
