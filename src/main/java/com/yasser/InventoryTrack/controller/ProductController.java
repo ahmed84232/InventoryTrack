@@ -51,13 +51,28 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDto addProduct(@RequestBody @Valid ProductDto product) {
-        return productsService.addProduct(product);
+        List<String> roles = this.securityContext.getRoles();
+
+        if (roles.contains(UserRole.DATA_ENTRY.getValue())) {
+
+            return productsService.addProduct(product);
+        }
+
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
     @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ProductDto updateEmployee(@PathVariable int id,
                                   @RequestBody Map<String, Object> patchPayload) {
-        return productsService.applyPatch(id, patchPayload);
+        List<String> roles = this.securityContext.getRoles();
+
+        if (roles.contains(UserRole.DATA_ENTRY.getValue())) {
+            return productsService.patch(patchPayload, id);
+
+        }
+
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
 
@@ -66,7 +81,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable int id) throws ResponseStatusException{
         List<String> roles = this.securityContext.getRoles();
 
-        if (roles.contains(UserRole.OWNER.getValue())) {
+        if (roles.contains(UserRole.DATA_ENTRY.getValue())) {
             productsService.deleteProduct(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }

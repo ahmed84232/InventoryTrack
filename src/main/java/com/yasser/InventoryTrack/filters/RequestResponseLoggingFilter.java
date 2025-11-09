@@ -67,13 +67,11 @@ public class RequestResponseLoggingFilter implements Filter {
             }
 
             this.securityContext.setRoles(roles);
-
-            System.out.println(decodedPayload);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
 
-//        log(requestWrapper, responseWrapper);
+        log(requestWrapper, responseWrapper);
 
 //        responseWrapper.copyBodyToResponse();
     }

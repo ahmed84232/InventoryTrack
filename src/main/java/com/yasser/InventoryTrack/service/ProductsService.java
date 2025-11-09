@@ -82,7 +82,19 @@ public class ProductsService {
         return productDto;
     }
 
-    private Product patch(Map<String, Object> patchPayload,
+    private Product productDtoToProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setId(productDto.getId());
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setDescription(productDto.getDescription());
+        product.setStockQuantity(productDto.getQuantity());
+
+        return product;
+    }
+
+
+    public ProductDto patch(Map<String, Object> patchPayload,
                          int id) {
 
         Product product = productDAO.findById(id)
@@ -93,25 +105,23 @@ public class ProductsService {
             throw new RuntimeException("Employee ID is not allowed to be changed " + id);
         }
 
+        ProductDto dto = productToProductDto(product);
+
+
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            objectMapper.updateValue(product, patchPayload);
+            objectMapper.updateValue(dto, patchPayload);
 
         } catch (JsonMappingException e) {
 
             throw new RuntimeException("Failed to apply patch", e);
         }
 
-        return product;
+        Product patchedProduct = productDtoToProduct(dto);
+        productDAO.save(patchedProduct);
+
+        return dto;
     }
-
-    public ProductDto applyPatch(int id, Map<String, Object> patchPayload) {
-
-        Product patchedProduct = patch(patchPayload, id);
-        Product product = productDAO.save(patchedProduct);
-
-        return productToProductDto(product);
-    };
 
 }
