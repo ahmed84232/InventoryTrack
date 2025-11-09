@@ -1,6 +1,8 @@
 package com.yasser.InventoryTrack.controller;
 
+import com.yasser.InventoryTrack.dao.ProductDao;
 import com.yasser.InventoryTrack.dto.ProductDto;
+import com.yasser.InventoryTrack.entity.Product;
 import com.yasser.InventoryTrack.enums.UserRole;
 import com.yasser.InventoryTrack.service.ProductsService;
 import com.yasser.InventoryTrack.util.SecurityContext;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -18,11 +21,13 @@ public class ProductController {
 
     private final ProductsService productsService;
     private final SecurityContext securityContext;
+    private final ProductDao productDao;
 
-    public ProductController(ProductsService productsService, SecurityContext securityContext) {
+    public ProductController(ProductsService productsService, SecurityContext securityContext, ProductDao productDao) {
 
         this.productsService = productsService;
         this.securityContext = securityContext;
+        this.productDao = productDao;
     }
 
 
@@ -48,6 +53,14 @@ public class ProductController {
     public ProductDto addProduct(@RequestBody @Valid ProductDto product) {
         return productsService.addProduct(product);
     }
+
+    @PatchMapping("/{id}")
+    public ProductDto updateEmployee(@PathVariable int id,
+                                  @RequestBody Map<String, Object> patchPayload) {
+        return productsService.applyPatch(id, patchPayload);
+    }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable int id) throws ResponseStatusException{

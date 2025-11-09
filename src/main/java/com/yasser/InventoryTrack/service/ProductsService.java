@@ -1,5 +1,8 @@
 package com.yasser.InventoryTrack.service;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.yasser.InventoryTrack.dao.ProductDao;
 import com.yasser.InventoryTrack.dto.ProductDto;
 import com.yasser.InventoryTrack.entity.Product;
@@ -10,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,20 +29,7 @@ public class ProductsService {
     // PRODUCTS METHODS
     public List<ProductDto> getProducts() {
 
-        List<Product> products = productDAO.findAll();
-        List<ProductDto> productDtos = new ArrayList<>();
-
-        for (Product productDetails : products) {
-            ProductDto dto = new ProductDto();
-
-            dto.setId(productDetails.getId());
-            dto.setName(productDetails.getName());
-            dto.setPrice(productDetails.getPrice());
-            dto.setDescription(productDetails.getDescription());
-            dto.setQuantity(productDetails.getStockQuantity());
-            productDtos.add(dto);
-        }
-        return productDtos;
+        return productDAO.findAll().stream().map(this::productToProductDto).toList();
     }
 
     // PRODUCTS METHODS
@@ -47,14 +38,7 @@ public class ProductsService {
         Product product = productDAO.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product id Not Found"));
 
-        ProductDto dto = new ProductDto();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setPrice(product.getPrice());
-        dto.setDescription(product.getDescription());
-        dto.setQuantity(product.getStockQuantity());
-
-        return dto;
+        return productToProductDto(product);
 
     }
 
@@ -68,22 +52,13 @@ public class ProductsService {
         Product theProduct = new Product();
 
         theProduct.setName(productDTO.getName());
-        theProduct.setDescription(productDTO.getDescription());
         theProduct.setPrice(productDTO.getPrice());
+        theProduct.setDescription(productDTO.getDescription());
         theProduct.setStockQuantity(productDTO.getQuantity());
 
-        Product savedProduct = productDAO.save(theProduct);
+        Product product = productDAO.save(theProduct);
 
-        ProductDto dto = new ProductDto();
-
-        dto.setName(savedProduct.getName());
-        dto.setId(savedProduct.getId());
-        dto.setDescription(savedProduct.getDescription());
-        dto.setPrice(savedProduct.getPrice());
-        dto.setQuantity(savedProduct.getStockQuantity());
-
-
-        return dto;
+        return productToProductDto(product);
     }
 
     // PRODUCTS METHODS
@@ -99,12 +74,44 @@ public class ProductsService {
     private ProductDto productToProductDto(Product product) {
         ProductDto productDto = new ProductDto();
         productDto.setId(product.getId());
-        productDto.setDescription(product.getDescription());
         productDto.setName(product.getName());
         productDto.setPrice(product.getPrice());
+        productDto.setDescription(product.getDescription());
         productDto.setQuantity(product.getStockQuantity());
 
         return productDto;
     }
+
+    private Product patch(Map<String, Object> patchPayload,
+                         int id) {
+
+        Product product = productDAO.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product id Not Found"));
+
+
+        if (patchPayload.containsKey("id")) {
+            throw new RuntimeException("Employee ID is not allowed to be changed " + id);
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            objectMapper.updateValue(product, patchPayload);
+
+        } catch (JsonMappingException e) {
+
+            throw new RuntimeException("Failed to apply patch", e);
+        }
+
+        return product;
+    }
+
+    public ProductDto applyPatch(int id, Map<String, Object> patchPayload) {
+
+        Product patchedProduct = patch(patchPayload, id);
+        Product product = productDAO.save(patchedProduct);
+
+        return productToProductDto(product);
+    };
 
 }
