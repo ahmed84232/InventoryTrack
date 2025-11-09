@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum UserRole {
     OWNER("owner"),
     DATA_ENTRY("dataEntry"),
-    CASHIER("cashier");
+    EMPLOYEE("employee");
 
     public final String value;
 
