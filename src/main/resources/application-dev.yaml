@@ -1,0 +1,9 @@
+DB_URL: jdbc:postgresql://localhost:5432/postgres
+DB_USER: postgres
+DB_PASS: postgres
+PORT: 8000
+
+#CLIENT_ID: InventoryManagement
+CLIENT_SECRET: qsnM2Nj6A3FZ85hTTG2gozr7RrjoLRpX
+TOKEN_URL: http://localhost:8080/realms/InventoryManagement/protocol/openid-connect/token
+REDIRECT_URI: http://localhost:3000/auth/callback

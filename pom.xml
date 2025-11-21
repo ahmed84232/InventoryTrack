@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.yasser</groupId>
 	<artifactId>InventoryTrack</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>InventoryTrack</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -29,6 +29,14 @@
 	<properties>
 		<java.version>24</java.version>
 	</properties>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<active.profile>dev</active.profile>
+			</properties>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

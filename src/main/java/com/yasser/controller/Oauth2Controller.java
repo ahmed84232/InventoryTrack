@@ -2,6 +2,7 @@ package com.yasser.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +16,17 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/api/auth")
 public class Oauth2Controller {
+
+    @Value("${keycloak.client-secret}")
+    private String clientSecret;
+
+    @Value("${keycloak.token-url}")
+    private String tokenUrl;
+
+    @Value("${keycloak.redirect-uri}")
+    private String redirectUri;
+
+
 
     @GetMapping("/redirect")
     public ResponseEntity<String> redirectToOauth2(@RequestParam("code") String code, @RequestParam("state") String state) {
@@ -33,16 +45,16 @@ public class Oauth2Controller {
         MultiValueMap<String, Object> keycloakBody = new LinkedMultiValueMap<>();
 
         keycloakBody.add("code", map.get("code"));
-        keycloakBody.add("redirect_uri", "http://localhost:3000/auth/callback");
+        keycloakBody.add("redirect_uri", redirectUri);
         keycloakBody.add("client_id", "InventoryManagement");
-        keycloakBody.add("client_secret", "qsnM2Nj6A3FZ85hTTG2gozr7RrjoLRpX");
+        keycloakBody.add("client_secret", clientSecret);
         keycloakBody.add("grant_type", "authorization_code");
 
         String response = "";
 
         try {
             response = restClient.post()
-                    .uri("http://localhost:8080/realms/InventoryManagement/protocol/openid-connect/token")
+                    .uri(tokenUrl)
                     .body(keycloakBody)
                     .retrieve()
                     .body(String.class);

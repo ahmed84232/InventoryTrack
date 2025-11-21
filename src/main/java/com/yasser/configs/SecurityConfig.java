@@ -1,4 +1,4 @@
-package com.yasser.security;
+package com.yasser.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

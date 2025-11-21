@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +32,8 @@ public class ProductDto {
     @Min(value = 0, message = "at least 1 of the product is required")
     private int quantity;
 
+    private LocalDateTime createdAt;
+
     public static ProductDto productToProductDto(Product product) {
         ProductDto productDto = new ProductDto();
         productDto.setId(product.getId());
@@ -37,6 +41,7 @@ public class ProductDto {
         productDto.setPrice(product.getPrice());
         productDto.setDescription(product.getDescription());
         productDto.setQuantity(product.getStockQuantity());
+        productDto.setCreatedAt(product.getCreatedAt());
 
         return productDto;
     }

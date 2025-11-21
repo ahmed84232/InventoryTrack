@@ -131,6 +131,7 @@ public class OrdersService {
         );
 
         productOrderDto.setTotalPrice(productOrder.getTotalPrice());
+        productOrderDto.setCreatedAt(productOrder.getCreatedAt());
 
         return productOrderDto;
     }
